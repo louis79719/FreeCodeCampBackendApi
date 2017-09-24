@@ -35,6 +35,7 @@ app.route('/api/package.json')
 
 app.route('/api/getTime').get( function(req, res, next ){
   console.log('api/getTime');
+  var dateObject = {}
   if( req.query.time ){
     console.log( "api gettime : time =  " + JSON.stringify( req.query.time ) );
     var date;
@@ -47,16 +48,15 @@ app.route('/api/getTime').get( function(req, res, next ){
     else{
       date = new Date(req.query.time);
     }
-    var dateObject = {}
     dateObject.unix = date.getTime() / 1000
     dateObject.natural =  date.toString()
-    res.type('json').send( JSON.stringify( dateObject ) )
   }
   else
   {
-    console.log("api gettime : parameter invalid")
-    res.type('txt').send( "api gettime : parameter invalid" )
+    dateObject.unix = null
+    dateObject.natural = null
   }
+  res.type('json').send( JSON.stringify( dateObject ) )
 })
   
 app.route('/')
