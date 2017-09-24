@@ -24,7 +24,7 @@ if (!process.env.DISABLE_XORIGIN) {
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
-app.route('/_api/package.json')
+app.route('/api/package.json')
   .get(function(req, res, next) {
     console.log('requested');
     fs.readFile(__dirname + '/package.json', function(err, data) {
@@ -32,11 +32,38 @@ app.route('/_api/package.json')
       res.type('txt').send(data.toString());
     });
   });
+
+app.route('/api/getTime').get( function(req, res, next ){
+  console.log('api/getTime');
+  if( req.query.time ){
+    console.log( "api gettime : time =  " + JSON.stringify( req.query.time ) );
+    var date;
+    if( parseInt( req.query.time ) )
+    {
+      var timeStamp = parseInt( req.query.time ) * 1000;
+      console.log( "timestamp : " +  timeStamp );
+      date = new Date( timeStamp );
+    }
+    else{
+      date = new Date(req.query.time);
+    }
+    var dateObject = {}
+    dateObject.unix = date.getTime() / 1000
+    dateObject.natural =  date.toString()
+    res.type('json').send( JSON.stringify( dateObject ) )
+  }
+  else
+  {
+    console.log("api gettime : parameter invalid")
+    res.type('txt').send( "api gettime : parameter invalid" )
+  }
+})
   
 app.route('/')
     .get(function(req, res) {
 		  res.sendFile(process.cwd() + '/views/index.html');
     })
+
 
 // Respond not found to all the wrong routes
 app.use(function(req, res, next){
@@ -55,6 +82,5 @@ app.use(function(err, req, res, next) {
 
 app.listen(process.env.PORT, function () {
   console.log('Node.js listening ...');
-  console.log("Test git push");
 });
 
