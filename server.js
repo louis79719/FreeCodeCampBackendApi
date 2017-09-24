@@ -58,6 +58,18 @@ app.route('/api/getTime').get( function(req, res, next ){
   }
   res.type('json').send( JSON.stringify( dateObject ) )
 })
+
+app.route('/api/whoami').get( function(req, res, next ){
+  console.log( req.headers )
+  var ip = req.headers['x-forwarded-for'].split(",")[0]
+  var language = req.headers['accept-language'].split(",")[0]
+  var software = req.headers['user-agent']
+  var clientInfo = {}
+  clientInfo.ipaddress = ip
+  clientInfo.language = language
+  clientInfo.software = software
+  res.type('json').send( JSON.stringify( clientInfo ) )
+})
   
 app.route('/')
     .get(function(req, res) {
